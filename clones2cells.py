@@ -103,7 +103,7 @@ if not ((perturbed is None) or (region is None)):
 
     if perturbed == "Control":
         annotation = (
-            .array(df_clone2vec.index) +
+            np.array(df_clone2vec.index) +
             " (Cluster " +
             np.array(df_clone2vec[leiden], dtype="str") + ")"
         )
