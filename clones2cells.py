@@ -1,10 +1,7 @@
 import streamlit as st
 import plotly.express as px
-import plotly.subplots as sp
 from streamlit_plotly_events import plotly_events
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import numpy as np
 
 st.set_page_config(
@@ -106,7 +103,7 @@ if not ((perturbed is None) or (region is None)):
 
     if perturbed == "Control":
         annotation = (
-            np.array(df_clone2vec.index) +
+            .array(df_clone2vec.index) +
             " (Cluster " +
             np.array(df_clone2vec[leiden], dtype="str") + ")"
         )
