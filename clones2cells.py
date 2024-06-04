@@ -54,6 +54,11 @@ Supplementary web-application (*Erickson, Isaev et al.*) showing cells from diff
 Also here you can find links for the data download (.h5ad-containers) and CellxGene web-viewer so you can perform differential
 expression analysis or any further statisctical testing.
 
+*How to use it?* Firstly, select dataset and body region of your interest. After that, you can choose which clustering resolution on clonal embedding
+is preferable and which gene expression embedding you want to explore. In zoom-mode you can press on any clone of interest and in a second this clone
+will be highlited on a gene expression embedding on the right side. Also, you can select set of clones in selection mode (e. g. with lasso tool) and
+these clones will be displayed at the right side as well.
+
 **It's highly recommended to use Google Chrome or Mozilla Firefox, the app might be displayed incorrectly in other
 browsers.**
 """)
