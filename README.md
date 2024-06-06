@@ -2,7 +2,7 @@
 
 Simple Streamlit application for interactive exploratory analysis of clonal embeddings.
 
-## How to use it
+## How to use
 
 To run *clones2cells* locally, firstly, install dependencies:
 
