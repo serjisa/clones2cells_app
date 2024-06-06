@@ -1,0 +1,195 @@
+import streamlit as st
+import plotly.express as px
+from streamlit_plotly_events import plotly_events
+import pandas as pd
+import numpy as np
+
+st.set_page_config(
+    page_title="clones2cells web-viewer",
+    page_icon="🔬",
+    layout="wide",
+)
+
+st.markdown("""
+# *clones2cells* web-viewer
+
+*How to use it?* Here will be some description.
+
+**It's highly recommended to use Google Chrome or Mozilla Firefox, the app might be displayed incorrectly in other
+browsers.**
+""")
+
+col1_upload, col2_upload = st.columns(2)
+
+clone2vec_df = None
+GEX_df = None
+
+# Uploading of the data
+
+with col1_upload:
+    clone2vec_file = st.file_uploader("Please select clone2vec embedding file")
+    if clone2vec_file is not None:
+        clone2vec_df = pd.read_csv(clone2vec_file, index_col=0)
+        clone2vec_color_obs = [i for i in clone2vec_df.columns if i not in ["UMAP1", "UMAP2"]]
+        if len(clone2vec_color_obs) == 0:
+            clone2vec_color_obs = ["None"]
+            clone2vec_df["None"] = "None"
+
+with col2_upload:
+    GEX_file = st.file_uploader("Please select gene expression embedding file")
+    if GEX_file is not None:
+        GEX_df = pd.read_csv(GEX_file, index_col=0)
+        GEX_color_obs = [i for i in GEX_df.columns if i not in ["UMAP1", "UMAP2", "clone"]]
+        if len(GEX_color_obs) == 0:
+            GEX_color_obs = ["None"]
+            GEX_df["None"] = "None"
+
+if (clone2vec_df is not None) and (GEX_df is not None):
+    # Selection of coloe scheme
+
+    col1_selection, col2_selection = st.columns(2)
+
+    with col1_selection:
+        clone2vec_color = st.selectbox(
+            "Please select clone2vec embedding color",
+            tuple(clone2vec_color_obs),
+        )
+
+    with col2_selection:
+        GEX_color = st.selectbox(
+            "Please select gene expression embedding color",
+            tuple(GEX_color_obs),
+        )
+
+    # Embedding plotting
+
+    col1_embedding, col2_embedding = st.columns(2)
+
+    # Streamlit plotly events for some reason plots categorical variables
+    # wrongly. For that purpose we create integer dummy variable
+
+    color_categories = list(set(clone2vec_df[clone2vec_color]))
+    categorical_mapping = dict(zip(color_categories, range(len(color_categories))))
+    clone2vec_df["dummy_color"] = [categorical_mapping[i] for i in clone2vec_df[clone2vec_color]]
+    clone2vec_annotation = (
+        np.array(clone2vec_df.index) +
+        " (" + np.array(clone2vec_df[clone2vec_color], dtype="str") +
+        ")"
+    )
+
+    with col1_embedding:
+        clone2vec_ax = px.scatter(
+            clone2vec_df,
+            x="UMAP1",
+            y="UMAP2",
+            title="<b>clone2vec UMAP</b>",
+            height=600,
+            width=700,
+            color="dummy_color",
+            color_continuous_scale="rainbow",
+            text=clone2vec_annotation,
+        )
+
+        clone2vec_ax.update_layout(
+            xaxis=dict(visible=False),
+            yaxis=dict(visible=False),
+            hovermode="closest",
+        )
+
+        clone2vec_ax.update_traces(
+            marker={"size": 7},
+            mode="markers",
+            hovertemplate="%{text}",
+        )
+
+        clone2vec_ax.update_layout(
+            title_x=0.45,
+            title={"font": {"family": "Arial", "size": 18}},
+        )
+
+        clone2vec_ax.update(layout_coloraxis_showscale=False)
+
+        selected_points = plotly_events(
+            clone2vec_ax,
+            click_event=True,
+            select_event=True,
+            hover_event=False,
+            override_height=600,
+        )
+
+    with col2_embedding:
+        if len(selected_points) == 0:
+            GEX_ax = px.scatter(
+                GEX_df,
+                x="UMAP1",
+                y="UMAP2",
+                title="Gene expression UMAP",
+                height=600,
+                width=600,
+                text=GEX_df[GEX_color],
+                color=GEX_color,
+            )
+
+            GEX_ax.update_traces(
+                marker={"size": 3},
+                mode="markers",
+                hovertemplate="%{text}",
+            )
+
+            GEX_ax.update_layout(
+                xaxis=dict(visible=False),
+                yaxis=dict(visible=False),
+                hovermode="closest",
+            )
+
+            GEX_ax.update_layout(
+                title_x=0.45,
+                title_y=0.93,
+                title={"font": {"family": "Arial", "size": 18}},
+                legend={"title": GEX_color},
+            )
+
+            st.plotly_chart(GEX_ax)
+
+        else:
+            selected_points = [point["pointNumber"] for point in selected_points]
+            selected_points = np.array(clone2vec_df.index[selected_points])
+            selected_points = GEX_df.clone.isin(selected_points)
+            GEX_df["selected"] = ["Selected" if i else "Other" for i in selected_points]
+            GEX_df["size"] = [3 if i else 1 for i in selected_points]
+            
+            GEX_ax = px.scatter(
+                GEX_df,
+                x="UMAP1",
+                y="UMAP2",
+                title="Gene expression UMAP",
+                height=600,
+                width=600,
+                text=GEX_df[GEX_color],
+                color="selected",
+                size="size",
+                size_max=6,
+                color_discrete_sequence=["lightgray", "black"],
+                category_orders={"selected": ["Other", "Selected"]}
+            )
+
+            GEX_ax.update_traces(
+                mode="markers",
+                hovertemplate="%{text}",
+                marker={"line": {"width": 0}}
+            )
+
+            GEX_ax.update_layout(
+                xaxis=dict(visible=False),
+                yaxis=dict(visible=False),
+                hovermode="closest",
+            )
+
+            GEX_ax.update_layout(
+                title_x=0.45,
+                title_y=0.93,
+                title={"font": {"family": "Arial", "size": 18}},
+                legend={"title": "Selection"},
+            )
+
+            st.plotly_chart(GEX_ax)
