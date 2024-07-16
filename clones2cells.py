@@ -10,6 +10,13 @@ st.set_page_config(
     layout="wide",
 )
 
+css="""
+<style>
+    section.main > div {max-width:1600px}
+</style>
+"""
+st.markdown(css, unsafe_allow_html=True)
+
 locations = {
     "Control": {
         "Trunk": {
