@@ -12,7 +12,7 @@ st.set_page_config(
 
 css="""
 <style>
-    section.main > div {max-width:1600px}
+    section.main > div {max-width:1500px}
 </style>
 """
 st.markdown(css, unsafe_allow_html=True)
