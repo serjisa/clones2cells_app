@@ -10,6 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
+# Setting up width of the window
 css="""
 <style>
     section.main > div {max-width:1500px}
@@ -17,6 +18,7 @@ css="""
 """
 st.markdown(css, unsafe_allow_html=True)
 
+# Files location with clonal and GEX embeddings
 locations = {
     "Control": {
         "Trunk": {
@@ -54,6 +56,25 @@ locations = {
     }
 }
 
+# Masks for Cellxgene location
+cellxgene_prefix = "https://adameykolab.hifo.meduniwien.ac.at/cellxgene_public/view/.review/.2024_Erickson_Isaev"
+cellxgene_experiment_type = {
+    "Control": "Control_mice",
+    "Perturbed and control": "Control_and_perturbed_mice",
+}
+cellxgene_bodypart = {
+    "Trunk": "Trunk_region",
+    "Head": "Head_region",
+}
+cellxgene_celldomain = {
+    "All cells": "All_cells.h5ad",
+    "Mesenchyme": "Mesenchyme.h5ad",
+    "Neurons": "Neurons.h5ad",
+    "NC-derived cells": "NC.h5ad",
+    "Other cells": "Other.h5ad",
+}
+
+# Description
 st.markdown("""
 # *clones2cells* web-viewer
 
@@ -130,9 +151,16 @@ if not ((perturbed is None) or (region is None)):
     with col1_2:
         col_but1_left, col_but2_left = st.columns(2)
         with col_but1_left:
-            st.button("Download .h5ad-file (clonal)", use_container_width=True)
+            st.button(
+                label="Download .h5ad-file (clonal)",
+                use_container_width=True,
+            )
         with col_but2_left:
-            st.button("Open in CellxGene viewer (clonal)", use_container_width=True)
+            st.link_button(
+                label="Open in CellxGene viewer (clonal)",
+                url=f"{cellxgene_prefix}/{cellxgene_experiment_type[perturbed]}/{cellxgene_bodypart[region]}/Clonal_embedding.h5ad/",
+                use_container_width=True,
+            )
 
         clone2vec_ax = px.scatter(
             df_clone2vec,
@@ -179,7 +207,11 @@ if not ((perturbed is None) or (region is None)):
         with col_but1_right:
             st.button("Download .h5ad-file (gene expression)", use_container_width=True)
         with col_but2_right:
-            st.button("Open in CellxGene viewer (gene expression)", use_container_width=True)
+            st.link_button(
+                label="Open in CellxGene viewer (gene expression)",
+                url=f"{cellxgene_prefix}/{cellxgene_experiment_type[perturbed]}/{cellxgene_bodypart[region]}/{cellxgene_celldomain[embedding]}/",
+                use_container_width=True,
+            )
 
         if len(selected_points) == 0:
             if perturbed == "Control":
