@@ -1,6 +1,6 @@
 # clones2cells
 
-Simple Streamlit application for interactive exploratory analysis of clonal embeddings.
+Simple Streamlit application for interactive exploratory analysis of clonal embeddings. For more info on how to construct clonal embeddings please see [scLiTr](https://github.com/kharchenkolab/scLiTr) package.
 
 ## Web-page with application
 
