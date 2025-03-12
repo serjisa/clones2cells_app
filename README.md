@@ -13,7 +13,7 @@ Please visit https://clones2cells.streamlit.app to explore datasets from the pap
 To run *clones2cells* locally, firstly, install dependencies:
 
 ```bash
-pip install streamlit plotly streamlit_plotly_events pandas
+pip install streamlit plotly==5.24 streamlit_plotly_events pandas
 ```
 
 After that, run the following command from the terminal:
