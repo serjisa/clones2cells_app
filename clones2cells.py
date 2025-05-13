@@ -74,6 +74,35 @@ cellxgene_celldomain = {
     "Other cells": "Other.h5ad",
 }
 
+# Masks for Gene expression AnnDatas location
+zenodo_prefix = "https://zenodo.org/records/15396687/files"
+zenodo_experiment_type = {
+    "Control": "Control",
+    "Perturbed and control": "Perturb",
+}
+zenodo_bodypart = {
+    "Trunk": "Trunk",
+    "Head": "Head",
+}
+zenodo_celldomain = {
+    "All cells": "All",
+    "Mesenchyme": "Mesenchyme",
+    "Neurons": "Neurons",
+    "NC-derived cells": "NC",
+    "Other cells": "Other",
+}
+
+# Masks for clone2vec AnnDatas location
+zenodo_prefix_c2v = "https://zenodo.org/records/15396987/files"
+zenodo_experiment_type_c2v = {
+    "Control": "Control",
+    "Perturbed and control": "Perturb",
+}
+zenodo_bodypart_c2v = {
+    "Trunk": "Trunk",
+    "Head": "Head",
+}
+
 # Description
 st.markdown("""
 # *clones2cells* web-viewer
@@ -151,8 +180,9 @@ if not ((perturbed is None) or (region is None)):
     with col1_2:
         col_but1_left, col_but2_left = st.columns(2)
         with col_but1_left:
-            st.button(
+            st.link_button(
                 label="Download .h5ad-file (clonal)",
+                url=f"{zenodo_prefix_c2v}/{zenodo_bodypart_c2v[region]}_{zenodo_experiment_type_c2v[perturbed]}_c2v.h5ad",
                 use_container_width=True,
             )
         with col_but2_left:
@@ -205,7 +235,11 @@ if not ((perturbed is None) or (region is None)):
     with col2_2:
         col_but1_right, col_but2_right = st.columns(2)
         with col_but1_right:
-            st.button("Download .h5ad-file (gene expression)", use_container_width=True)
+            st.link_button(
+                label="Download .h5ad-file (gene expression)",
+                url=f"{zenodo_prefix}/Erickson_{zenodo_bodypart[region]}_{zenodo_experiment_type[perturbed]}_{zenodo_celldomain[embedding]}.h5ad",
+                use_container_width=True,
+            )
         with col_but2_right:
             st.link_button(
                 label="Open in CellxGene viewer (gene expression)",
