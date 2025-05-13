@@ -57,7 +57,7 @@ locations = {
 }
 
 # Masks for Cellxgene location
-cellxgene_prefix = "https://adameykolab.hifo.meduniwien.ac.at/cellxgene_public/view/.review/.2024_Erickson_Isaev"
+cellxgene_prefix = "https://adameykolab.hifo.meduniwien.ac.at/cellxgene_public/view/2024_Erickson_Isaev"
 cellxgene_experiment_type = {
     "Control": "Control_mice",
     "Perturbed and control": "Control_and_perturbed_mice",
